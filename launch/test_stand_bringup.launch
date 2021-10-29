@@ -1,0 +1,47 @@
+<launch>
+  <arg name="use_rviz" default="true" />
+  <arg name="robot_ip" default="10.6.1.140" />
+  <arg name="robot_description_file" default="$(find ur_test_stand)/launch/load_ur5_test_stand.launch" />
+  <arg name="simulate" default="true" />
+
+  <!-- Simulation settings -->
+  <group if="$(arg simulate)" >
+
+    <include file="$(arg robot_description_file)"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+    <!-- We do not have a robot connected, so publish fake joint states -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
+      <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+    </node>
+
+  </group>
+
+  <!-- Hardware settings -->
+  <group unless="$(arg simulate)" >
+
+    <!-- Load URDFs, joint limits and kinematics -->
+    <include file="$(find ur_robot_driver)/launch/ur5_bringup.launch" >
+      <arg name="robot_ip" value="$(arg robot_ip)" />
+      <arg name="robot_description_file" value="$(arg robot_description_file)" />
+    </include>
+
+    <!-- Launch RealSense -->
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch" >
+      <arg name="filters" value="pointcloud" />
+      <arg name="ordered_pc" value="true" />
+    </include>
+
+  </group>
+
+  <!-- The semantic description that corresponds to the URDF -->
+  <param name="robot_description_semantic" textfile="$(find ur_test_stand)/config/test_stand.srdf" />
+
+  <!-- Launch MoveIt -->
+  <include file="$(find ur_test_stand)/launch/moveit.launch" >
+    <arg name="simulate" value="$(arg simulate)" />
+  </include>
+
+  <!-- Launch RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ur_test_stand)/rviz/ur_test_stand.rviz" required="true" />
+</launch>

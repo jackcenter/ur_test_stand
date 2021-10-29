@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <xacro:macro name="calibration_plate" params="
+      prefix
+      parent"
+  >
+
+    <material name="wood">
+      <color rgba="0.55 0.35 0.17 1" />
+    </material>
+
+    <link name="${prefix}base_link" >
+      <visual>
+        <geometry>
+          <box size="0.292 0.229 0.013" />
+        </geometry>
+        <origin xyz="0.0 0.0 0.0065" rpy="0.0 0.0 0.0" />
+        <material name="wood" />
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.292 0.229 0.013" />
+        </geometry>
+        <origin xyz="0.0 0.0 0.0065" rpy="0.0 0.0 0.0" />
+      </collision>
+    </link>
+
+    <joint name="${parent}_to_${prefix}base_link" type="fixed" >
+      <parent link="${parent}" />
+      <child link="${prefix}base_link" />
+      <origin xyz="0.106 -0.0745 0.0" rpy="0.0 0.0 0.0" />
+    </joint>
+    
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <xacro:macro name="ur5_bench" params="
+      prefix
+      parent"
+  >
+
+    <material name="grey">
+      <color rgba="0.3 0.3 0.3 0.8" />
+    </material>
+
+    <link name="${prefix}base_link" >
+      <visual>
+        <geometry>
+          <box size="1.17 0.62 0.92" />
+        </geometry>
+        <origin xyz="-0.465 -0.175 -0.46" rpy="0.0 0.0 0.0" />
+        <material name="grey" />
+      </visual>
+      <collision>
+        <geometry>
+          <box size="1.17 0.62 0.92" />
+        </geometry>
+        <origin xyz="-0.465 -0.175 -0.46" rpy="0.0 0.0 0.0" />
+      </collision>
+    </link>
+
+    <joint name="${parent}_to_${prefix}base_link" type="fixed" >
+      <parent link="${parent}" />
+      <child link="${prefix}base_link" />
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    </joint>
+    
+  </xacro:macro>
+
+</robot>
